@@ -1,6 +1,8 @@
 var fs = require('fs');
 var readline = require('readline');
 var {google} = require('googleapis');
+const axios = require("axios");
+
 var OAuth2 = google.auth.OAuth2;
 
 
@@ -118,6 +120,8 @@ function getChannel(auth) {
     }
   });
 }
+const API_KEY = "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";
+
 const searchShortVideos = async (query) => {
   const results = await axios.get(`https://www.googleapis.com/youtube/v3/search?q=${query}&maxResults=10&type=video&part=snippet&videoDefinition=short&key=${API_KEY}`);
   return results.data.items;
