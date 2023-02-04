@@ -30,16 +30,7 @@ function authorize(credentials, callback) {
   var redirectUrl = credentials.web.redirect_uris;
   var oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl);
 
-  // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, function(err, token) {
-    if (err) {
-      getNewToken(oauth2Client, callback);
-    } else {
-      oauth2Client.credentials = JSON.parse(token);
-      callback(oauth2Client);
-    }
-  });
-}
+ 
 
 /**
  * Get and store new token after prompting for user authorization, and then
