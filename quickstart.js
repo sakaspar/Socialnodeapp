@@ -1,6 +1,6 @@
 var fs = require('fs');
 var readline = require('readline');
-var {google} = require('googleapis');
+var {google} = require('googleapis');//Doc : https://developers.google.com/youtube/v3
 const axios = require("axios");
 
 var OAuth2 = google.auth.OAuth2;
