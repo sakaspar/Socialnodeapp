@@ -4,12 +4,12 @@ const path = require('path');
 const ytdl = require('ytdl-core');
 const port = process.env.PORT || 9090;
 const app = express();
-
+const linksFile = 'links.txt';
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-  ytdl('https://www.youtube.com/watch?v=R1Ehb3JA-cM',{filter: 'audioandvideo'})
-  .pipe(fs.createWriteStream('videos/video.mp4'));
+  ytdl('https://www.youtube.com/watch?v=Ul8vqaGGnY0',{filter: 'audioandvideo'})
+  .pipe(fs.createWriteStream('videos/video1.mp4'));
 
 
 const directoryPath = path.join(__dirname, '.');
@@ -25,6 +25,20 @@ fs.readdir(directoryPath, function (err, files) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.get('/new', (req, res) => {
+  fs.readFile(linksFile, 'utf-8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
+    const links = data.split(',');
+    links.forEach((link) => {
+      ytdl(link, { filter: 'audioandvideo' })
+        .pipe(fs.createWriteStream(`videos/video-${Date.now()}.mp4`));
+    });
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+});
 
 app.get("/shows", (req, res) => {
   fs.readdir("./videos", (err, files) => {
