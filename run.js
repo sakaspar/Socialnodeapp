@@ -83,6 +83,83 @@ app.get("/shows", (req, res) => {
   });
 });
 
+app.get("/allshows", (req, res) => {
+  fs.readdir("./", (err, files) => {
+    if (err) {
+      console.error(`Error reading directory ./videos.`);
+      console.error(err);
+      res.sendStatus(500);
+      return;
+    }
+
+    const videoFiles = files.filter(
+      (file) => file.endsWith(".mp4"));
+
+
+        let html = `<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Video streaming example</title>
+    </head>
+    <body> 
+        <h1>Video streaming example</h1>
+        
+        <div style="display: flex; flex-wrap: wrap;">`;
+
+        let videoCounter = 0;
+        for (const videoFile of videoFiles) {
+            html += `<div style="flex: 1; padding: 10px;">
+                <div>
+                    <h2>${videoFile}</h2>
+                </div>
+                <video
+                    style="height: 300px"
+                    muted
+                    playsInline
+                    loop
+                    controls
+                    src="/videos/${videoFile}" 
+                    >
+                </video>
+            </div>`;
+            
+            videoCounter++;
+            if (videoCounter % 2 === 0) {
+                html += `</div><div style="display: flex; flex-wrap: wrap;">`;
+            }
+        }
+
+        html += `</div>
+    </body>
+</html>`;
+
+    for (const videoFile of videoFiles) {
+      html += `<div>
+                <div>
+                    <h2>${videoFile}</h2>
+                </div>
+                <video
+                    style="height: 300px"
+                    muted
+                    playsInline
+                    loop
+                    controls
+                    src="/videos/${videoFile}" 
+                    >
+                </video>
+            </div>`;
+    }
+
+    html += `</div>
+    </body>
+</html>`;
+
+    res.send(html);
+  });
+});
+
+
 app.get("/videos/:videoFile", (req, res) => {
   const filePath = `./videos/${req.params.videoFile}`;
 
