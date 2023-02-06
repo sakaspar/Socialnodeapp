@@ -8,6 +8,11 @@ const express = require('express');
 const app = express();
 
 
+app.use((req, res, next) => {
+  const host = req.get('https://socialnodeapp.onrender.com');
+  console.log(`Host URL: ${host}`);
+  next();
+});
 
 ytdl('https://www.youtube.com/watch?v=YykjpeuMNEk&list=RDuuZE_IRwLNI&index=13')
   .pipe(fs.createWriteStream('video.mp4'));
