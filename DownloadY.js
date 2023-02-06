@@ -1,24 +1,36 @@
-const axios = require("axios");
-const API_KEY = "YOUR_API_KEY";
+const fs = require('fs');
+const ytdl = require('ytdl-core');
+const path = require('path');
+// TypeScript: import ytdl from 'ytdl-core'; with --esModuleInterop
+// TypeScript: import * as ytdl from 'ytdl-core'; with --allowSyntheticDefaultImports
+// TypeScript: import ytdl = require('ytdl-core'); with neither of the above
+const express = require('express');
+const app = express();
 
-const searchShortVideos = async (query) => {
-  const results = await axios.get(`https://www.googleapis.com/youtube/v3/search?q=${query}&maxResults=10&type=video&part=snippet&videoDefinition=short&key=${API_KEY}`);
-  return results.data.items;
-};
 
-const getVideoDetails = async (videoIds) => {
-  const results = await axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${videoIds.join(",")}&part=statistics&key=${API_KEY}`);
-  return results.data.items;
-};
 
-const installBestShortVideos = async (query) => {
-  const shortVideos = await searchShortVideos(query);
-  const videoIds = shortVideos.map((video) => video.id.videoId);
-  const videoDetails = await getVideoDetails(videoIds);
-  const sortedVideos = videoDetails.sort((a, b) => b.statistics.viewCount - a.statistics.viewCount).slice(0, 5);
-  console.log("The best 5 short videos based on view count are: ");
-  sortedVideos.forEach((video) => console.log(`${video.snippet.title} - Views: ${video.statistics.viewCount}`));
-};
+ytdl('https://www.youtube.com/watch?v=YykjpeuMNEk&list=RDuuZE_IRwLNI&index=13')
+  .pipe(fs.createWriteStream('video.mp4'));
 
-// Example usage
-installBestShortVideos("funny cat videos").then(console.log);
+
+const directoryPath = path.join(__dirname, '.');
+
+fs.readdir(directoryPath, function (err, files) {
+  if (err) {
+    return console.log('Unable to scan directory: ' + err);
+  }
+  files.forEach(function (file) {
+    console.log(file);
+  });
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
