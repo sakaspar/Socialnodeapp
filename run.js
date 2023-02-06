@@ -20,7 +20,8 @@ app.get("/shows", (req, res) => {
       (file) => file.endsWith(".mp4") || file.endsWith(".webm")
     );
 
-    let html = `<!doctype html>
+
+        let html = `<!doctype html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -29,7 +30,34 @@ app.get("/shows", (req, res) => {
     <body> 
         <h1>Video streaming example</h1>
         
-        <div style="display: flex; flex-direction: row;">`;
+        <div style="display: flex; flex-wrap: wrap;">`;
+
+        let videoCounter = 0;
+        for (const videoFile of videoFiles) {
+            html += `<div style="flex: 1; padding: 10px;">
+                <div>
+                    <h2>${videoFile}</h2>
+                </div>
+                <video
+                    style="height: 300px"
+                    muted
+                    playsInline
+                    loop
+                    controls
+                    src="/videos/${videoFile}" 
+                    >
+                </video>
+            </div>`;
+            
+            videoCounter++;
+            if (videoCounter % 2 === 0) {
+                html += `</div><div style="display: flex; flex-wrap: wrap;">`;
+            }
+        }
+
+        html += `</div>
+    </body>
+</html>`;
 
     for (const videoFile of videoFiles) {
       html += `<div>
