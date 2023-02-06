@@ -1,9 +1,6 @@
 const fs = require('fs');
 const ytdl = require('ytdl-core');
 const path = require('path');
-// TypeScript: import ytdl from 'ytdl-core'; with --esModuleInterop
-// TypeScript: import * as ytdl from 'ytdl-core'; with --allowSyntheticDefaultImports
-// TypeScript: import ytdl = require('ytdl-core'); with neither of the above
 const express = require('express');
 const app = express();
 
