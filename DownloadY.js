@@ -10,7 +10,7 @@ const app = express();
 
 
 ytdl('https://www.youtube.com/watch?v=YykjpeuMNEk&list=RDuuZE_IRwLNI&index=13')
-  .pipe(fs.createWriteStream('video.mp4'));
+  .pipe(fs.createWriteStream('videos/video.mp4'));
 
 
 const directoryPath = path.join(__dirname, '.');
