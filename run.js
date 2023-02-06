@@ -1,11 +1,30 @@
 const express = require("express");
 const fs = require("fs");
-
+const path = require('path');
+const ytdl = require('ytdl-core');
+const port = process.env.PORT || 9090;
 const app = express();
 
-const port = 8080;
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.static("public"));
+app.get('/', (req, res) => {
+  ytdl('https://www.youtube.com/watch?v=YykjpeuMNEk&list=RDuuZE_IRwLNI&index=13')
+  .pipe(fs.createWriteStream('videos/video.mp4'));
+
+
+const directoryPath = path.join(__dirname, '.');
+
+fs.readdir(directoryPath, function (err, files) {
+  if (err) {
+    return console.log('Unable to scan directory: ' + err);
+  }
+  files.forEach(function (file) {
+    console.log(file);
+  });
+});
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 
 app.get("/shows", (req, res) => {
   fs.readdir("./videos", (err, files) => {
@@ -188,3 +207,4 @@ app.get("/videos/:videoFile", (req, res) => {
 app.listen(port, () => {
   console.log(`Open your browser and navigate to http://localhost:${port}`);
 });
+
