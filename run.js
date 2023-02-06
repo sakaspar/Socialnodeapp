@@ -17,8 +17,7 @@ app.get("/shows", (req, res) => {
     }
 
     const videoFiles = files.filter(
-      (file) => file.endsWith(".mp4") || file.endsWith(".webm")
-    );
+      (file) => file.endsWith(".mp4"));
 
 
         let html = `<!doctype html>
