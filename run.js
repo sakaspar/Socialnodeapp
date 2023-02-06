@@ -8,7 +8,7 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-  ytdl('https://www.youtube.com/watch?v=R1Ehb3JA-cM',filter: 'audioandvideo')
+  ytdl('https://www.youtube.com/watch?v=R1Ehb3JA-cM',{filter: 'audioandvideo'})
   .pipe(fs.createWriteStream('videos/video.mp4'));
 
 
