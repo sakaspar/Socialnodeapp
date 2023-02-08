@@ -15,8 +15,8 @@
     "googleapis": "^110.0.0",
     "path": "0.12.7",
     "request": "^2.88.2",
-    "ytdl-core": "4.11.2"
-    
+    "ytdl-core": "4.11.2",
+    "fluent-ffmpeg":"2.1.2"
   },
   "author": "Hamza",
   "license": "ISC"
