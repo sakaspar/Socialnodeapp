@@ -1,19 +1,25 @@
-const { FFmpeg } = require("ffmpeg-web");
+const ffmpeg = require("fluent-ffmpeg");
 const fs = require("fs");
 const path = require("path");
 
 async function extractAudioFromVideo(filePath) {
-  // Load the .mp4 file
-  const video = await FFmpeg.load(filePath);
+  return new Promise((resolve, reject) => {
+    const fileName = path.basename(filePath, ".mp4");
+    const outputFilePath = path.join("audios", `${fileName}.mp3`);
 
-  // Extract the audio
-  const audio = await video.extract("audio");
-
-  // Save the audio as an AAC file
-  const audioFileName = path.basename(filePath, path.extname(filePath)) + ".aac";
-  const audioFilePath = path.join("audios", audioFileName);
-  await audio.save(audioFilePath);
-}A
+    // Load the .mp4 file
+    ffmpeg(filePath)
+      .output(outputFilePath)
+      .audioCodec("libmp3lame")
+      .on("end", () => {
+        resolve();
+      })
+      .on("error", (error) => {
+        reject(error);
+      })
+      .run();
+  });
+}
 
 (async () => {
   const directoryPath = "videos";
@@ -26,6 +32,10 @@ async function extractAudioFromVideo(filePath) {
   // Extract audio from each .mp4 file
   for (const file of files) {
     const filePath = path.join(directoryPath, file);
-    await extractAudioFromVideo(filePath);
+    try {
+      await extractAudioFromVideo(filePath);
+    } catch (error) {
+      console.error(error);
+    }
   }
 })();
