@@ -28,7 +28,7 @@ async function extractAudioFromVideo(filePath) {
   const files = fs.readdirSync(directoryPath).filter((file) => {
     return path.extname(file) === ".mp4";
   });
-
+console.log("[[ List of files ]]",files);
   // Extract audio from each .mp4 file
   for (const file of files) {
     const filePath = path.join(directoryPath, file);
@@ -38,4 +38,17 @@ async function extractAudioFromVideo(filePath) {
       console.error(error);
     }
   }
+  
+  //Print out dir
+const directoryPath = path.join(__dirname, 'directoryName');
+
+fs.readdir(directoryPath, function (err, files) {
+  if (err) {
+    return console.log('Unable to scan directory: ' + err);
+  } 
+  files.forEach(function (file) {
+    console.log(file);
+  });
+});
+
 })();
