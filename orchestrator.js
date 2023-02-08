@@ -3,13 +3,13 @@ const firstScript = require('./generatelinks.js');
 const secondScript = require('./run.js');
 const thirdScript = require('./test.js');
 async.series([
-  function () {
-    firstScript();
+  function (callback) {
+    firstScript(callback);
   },
-  function () {
-    secondScript();
+  function (callback) {
+    secondScript(callback);
   },
-  function () {
-    thirdScript();
+  function (callback) {
+    thirdScript(callback);
   }
 ]);
