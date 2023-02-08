@@ -1,41 +1,31 @@
-const fs = require('fs');
-const ytdl = require('ytdl-core');
-const path = require('path');
-// TypeScript: import ytdl from 'ytdl-core'; with --esModuleInterop
-// TypeScript: import * as ytdl from 'ytdl-core'; with --allowSyntheticDefaultImports
-// TypeScript: import ytdl = require('ytdl-core'); with neither of the above
-const express = require('express');
-const app = express();
+const { FFmpeg } = require("ffmpeg-web");
+const fs = require("fs");
+const path = require("path");
 
+async function extractAudioFromVideo(filePath) {
+  // Load the .mp4 file
+  const video = await FFmpeg.load(filePath);
 
-app.use((req, res, next) => {
-  const host = req.get('https://socialnodeapp.onrender.com');
-  console.log(`Host URL: ${host}`);
-  next();
-});
+  // Extract the audio
+  const audio = await video.extract("audio");
 
-ytdl('https://www.youtube.com/watch?v=YykjpeuMNEk&list=RDuuZE_IRwLNI&index=13')
-  .pipe(fs.createWriteStream('video.mp4'));
+  // Save the audio as an AAC file
+  const audioFileName = path.basename(filePath, path.extname(filePath)) + ".aac";
+  const audioFilePath = path.join("audios", audioFileName);
+  await audio.save(audioFilePath);
+}A
 
+(async () => {
+  const directoryPath = "videos";
 
-const directoryPath = path.join(__dirname, '.');
-
-fs.readdir(directoryPath, function (err, files) {
-  if (err) {
-    return console.log('Unable to scan directory: ' + err);
-  }
-  files.forEach(function (file) {
-    console.log(file);
+  // Get a list of all .mp4 files in the directory
+  const files = fs.readdirSync(directoryPath).filter((file) => {
+    return path.extname(file) === ".mp4";
   });
-});
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
+  // Extract audio from each .mp4 file
+  for (const file of files) {
+    const filePath = path.join(directoryPath, file);
+    await extractAudioFromVideo(filePath);
+  }
+})();
