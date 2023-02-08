@@ -40,9 +40,9 @@ console.log("[[ List of files ]]",files);
   }
   
   //Print out dir
-const directoryPath = path.join(__dirname, 'directoryName');
+const dir = path.join(__dirname, 'directoryName');
 
-fs.readdir(directoryPath, function (err, files) {
+fs.readdir(dir, function (err, files) {
   if (err) {
     return console.log('Unable to scan directory: ' + err);
   } 
