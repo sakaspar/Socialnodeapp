@@ -1,7 +1,7 @@
 const async = require('async');
-const firstScript = require('./generatelinks.js'); 
-const secondScript = require('./run.js');
-const thirdScript = require('./test.js');
+const firstScript = require('./generatelinks.js').run; 
+const secondScript = require('./run.js').run;
+const thirdScript = require('./test.js').run;
 async.series([
   function (callback) {
     firstScript(callback);
