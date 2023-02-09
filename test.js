@@ -1,3 +1,4 @@
+exports.run = function() {
 const ffmpeg = require("fluent-ffmpeg");
 const fs = require("fs");
 const path = require("path");
@@ -40,3 +41,4 @@ console.log("[[ List of files ]]",files);
   }
 
 })();
+}
