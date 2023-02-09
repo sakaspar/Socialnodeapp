@@ -236,10 +236,52 @@ app.get("/videos/:videoFile", (req, res) => {
       console.log(error);
       res.sendStatus(500);
     });
-
     fileStream.pipe(res);
   });
 });
+
+
+app.get('/dir', (req, res) => {
+  let content = '';
+  const showContents = (dir) => {
+    fs.readdir(dir, (err, files) => {
+      if (err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+      files.forEach((file) => {
+        const filePath = path.join(dir, file);
+        fs.stat(filePath, (err, stat) => {
+          if (err) {
+            console.error(err);
+            return res.sendStatus(500);
+          }
+          if (stat.isDirectory()) {
+            content += `<li>${file}/</li>`;
+            showContents(filePath);
+          } else {
+            content += `<li>${file}</li>`;
+          }
+        });
+      });
+    });
+  };
+  showContents(__dirname);
+  res.send(`
+    <html>
+      <head>
+        <title>Directories and Contents</title>
+      </head>
+      <body>
+        <h1>Directories and Contents</h1>
+        <ul>
+          ${content}
+        </ul>
+      </body>
+    </html>
+  `);
+});
+
 
 app.listen(port, () => {
   console.log(`Open your browser and navigate to http://localhost:${port}`);
