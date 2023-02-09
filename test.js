@@ -38,17 +38,5 @@ console.log("[[ List of files ]]",files);
       console.error(error);
     }
   }
-  
-  //Print out dir
-const dir = path.join(__dirname, 'directoryName');
-
-fs.readdir(dir, function (err, files) {
-  if (err) {
-    return console.log('Unable to scan directory: ' + err);
-  } 
-  files.forEach(function (file) {
-    console.log(file);
-  });
-});
 
 })();
