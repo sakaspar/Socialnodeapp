@@ -14,7 +14,7 @@ request(url, (error, response, html) => {
       });
       fs.writeFileSync(file, links.join(',\n'));
       console.log(`Links saved to ${file}`);
-      console.log(links);
+      
   }
 });
 
