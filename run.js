@@ -80,10 +80,10 @@ app.get("/shows", (req, res) => {
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Video streaming example</title>
+        <title>mhm..</title>
     </head>
     <body> 
-        <h1>Video streaming example</h1>
+        <h1>V</h1>
         
         <div style="display: flex; flex-wrap: wrap;">`;
 
@@ -156,10 +156,10 @@ app.get("/allshows", (req, res) => {
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Video streaming example</title>
+        <title>Videos</title>
     </head>
     <body> 
-        <h1>Video streaming example</h1>
+        <h1>V</h1>
         
         <div style="display: flex; flex-wrap: wrap;">`;
 
