@@ -266,7 +266,7 @@ app.get('/dir', (req, res) => {
       });
     });
   };
-  showContents(__dirname);
+  showContents(dir);
   res.send(`
     <html>
       <head>
