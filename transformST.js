@@ -16,7 +16,7 @@ async function loadModel() {
     model = loadedModel;
   });
   
-
+//
 
 async function transcribeSpeech(filename) {
   const audio = fs.readFileSync(filename);
