@@ -25,7 +25,7 @@ fs.readdir(directoryPath, function (err, files) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/new', (req, res) => {
+/*app.get('/new', (req, res) => {
   fs.readFile(linksFile, 'utf-8', (err, data) => {
     if (err) {
       console.error(err);
@@ -35,6 +35,29 @@ app.get('/new', (req, res) => {
     links.forEach((link) => {
       ytdl(link, { filter: 'audioandvideo' })
         .pipe(fs.createWriteStream(`videos/video-${Date.now()}.mp4`));
+    });
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+});
+*/
+
+app.get('/new', (req, res) => {
+  fs.readFile(linksFile, 'utf-8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
+    const links = data.split(',');
+    links.forEach((link) => {
+      ytdl.getInfo(link, (err, info) => {
+        if (err) {
+          console.error(err);
+          return res.sendStatus(500);
+        }
+        const title = info.title.replace(/\s/g, '-');
+        ytdl(link, { filter: 'audioandvideo' })
+          .pipe(fs.createWriteStream(`videos/${title}.mp4`));
+      });
     });
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
