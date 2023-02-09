@@ -25,7 +25,7 @@ fs.readdir(directoryPath, function (err, files) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-/*app.get('/new', (req, res) => {
+app.get('/new', (req, res) => {
   fs.readFile(linksFile, 'utf-8', (err, data) => {
     if (err) {
       console.error(err);
@@ -39,8 +39,8 @@ fs.readdir(directoryPath, function (err, files) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 });
-*/
 
+/*
 app.get('/new', (req, res) => {
   fs.readFile(linksFile, 'utf-8', (err, data) => {
     if (err) {
@@ -62,7 +62,7 @@ app.get('/new', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 });
-
+*/
 app.get("/shows", (req, res) => {
   fs.readdir("./videos", (err, files) => {
     if (err) {
