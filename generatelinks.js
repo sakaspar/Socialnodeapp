@@ -1,3 +1,4 @@
+exports.run = function() {
 const request = require('request');
 const cheerio = require('cheerio');
 const fs = require('fs');
@@ -17,4 +18,5 @@ request(url, (error, response, html) => {
       
   }
 });
+}
 
