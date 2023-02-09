@@ -9,4 +9,3 @@ const thirdScript = require('./test.js').run;
 
     thirdScript();
 
-;
