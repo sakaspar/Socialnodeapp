@@ -4,8 +4,7 @@
   "description": "",
   "main": "orchestrator.js",
   "scripts": {
-    "start": "  node orchestrator.js ",
-    "test": "  node orchestrator.js "
+    "start": "  node orchestrator.js "
     
   },
   "dependencies": {
