@@ -93,7 +93,17 @@ async function checkBatchReady(batchLinks) {
   return results.every(r => r === true);
 }
 
-
+function getDirectoryContents(dir) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(dir, (err, files) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(files);
+      }
+    });
+  });
+}
 
 
 
@@ -154,6 +164,7 @@ app.get('/new', (req, res) => {
 
 app.get('/new1', async (req, res) => {
  await downloadVideos();
+ res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 
@@ -242,50 +253,45 @@ app.get("/videos/:videoFile", (req, res) => {
 
 
 app.get('/dir', (req, res) => {
-  let content = '';
-  const showContents = (dir) => {
-    fs.readdir(dir, (err, files) => {
-      if (err) {
-        console.error(err);
-        return res.sendStatus(500);
-      }
-      files.forEach((file) => {
-        const filePath = path.join(dir, file);
-        fs.stat(filePath, (err, stat) => {
-          if (err) {
-            console.error(err);
-            return res.sendStatus(500);
-          }
-          if (stat.isDirectory()) {
-            content += `<li>${file}/</li>`;
-            showContents(filePath);
-          } else {
-            content += `<li>${file}</li>`;
-          }
-        });
-      });
+  const audioDir = path.join(__dirname, 'audios');
+  const videoDir = path.join(__dirname, 'videos');
+  const audioPromise = getDirectoryContents(audioDir);
+  const videoPromise = getDirectoryContents(videoDir);
+
+  Promise.all([audioPromise, videoPromise])
+    .then(([audioFiles, videoFiles]) => {
+      const content = `
+        <html>
+          <head>
+            <title>Directory Contents</title>
+          </head>
+          <body>
+            <h1>Audio Files</h1>
+            <ul>
+              ${audioFiles.map(file => `<li>${file}</li>`).join('')}
+            </ul>
+            <h1>Video Files</h1>
+            <ul>
+              ${videoFiles.map(file => `<li>${file}</li>`).join('')}
+            </ul>
+          </body>
+        </html>
+      `;
+      res.send(content);
+    })
+    .catch(err => {
+      console.error(err);
+      res.sendStatus(500);
     });
-  };
-  showContents(dir);
-  res.send(`
-    <html>
-      <head>
-        <title>Directories and Contents</title>
-      </head>
-      <body>
-        <h1>Directories and Contents</h1>
-        <ul>
-          ${content}
-        </ul>
-      </body>
-    </html>
-  `);
 });
+
+
 
 
 app.listen(port, () => {
   console.log(`Open your browser and navigate to http://localhost:${port}`);
 });
+
 
 
 
