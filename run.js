@@ -1,4 +1,4 @@
-//exports.run = async function() {
+exports.run = async function() {
 const express = require("express");
 const fs = require("fs");
 const path = require('path');
@@ -282,4 +282,4 @@ app.listen(port, () => {
   console.log(`Open your browser and navigate to http://localhost:${port}`);
 });
 
-//}
+}
