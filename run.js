@@ -43,7 +43,7 @@ async function downloadVideos() {
         const videoPath = `videos/${title}.mp4`;
         const audioPath = `audios/${title}.mp3`;
 
-        const videoPromise = ytdl(link, { filter: 'videoonly' })
+        const videoPromise = ytdl(link, { filter: 'audioandvideo' })
           .pipe(fs.createWriteStream(videoPath));
 
         const audioPromise = ytdl(link, { filter: 'audioonly' })
