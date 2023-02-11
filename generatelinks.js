@@ -10,13 +10,14 @@ request(url, (error, response, html) => {
     if (!error && response.statusCode === 200) {
         const $ = cheerio.load(html);
         const links = [];
-        $('tbody a').each((i, link) => {
+        $('tbody a[href^="https://www.youtube.com/"]').each((i, link) => {
           links.push($(link).attr('href'));
       });
       fs.writeFileSync(file, links.join(',\n'));
       console.log(`Links saved to ${file}`);
       
   }
+  return ; 
 });
 }
 
