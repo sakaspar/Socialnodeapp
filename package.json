@@ -18,7 +18,9 @@
     "request": "^2.88.2",
     "ytdl-core": "4.11.2",
     "fluent-ffmpeg":"2.1.2",
-    "async":"3.2.4"
+    "async":"3.2.4",
+    "sanitize-filename": "^1.6.3"
+   
 
   },
   "author": "Hamza",
