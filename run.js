@@ -56,10 +56,10 @@ async function downloadVideos() {
       console.log(`Batch ${i + 1} finished downloading.`);
 
       if (i < numBatches - 1) {
-        console.log(`Pausing until batch ${i + 2} is ready...`);
+        console.log(`Pausing until batch ${i + 1} is done..`);
         let isReady = false;
         while (!isReady) {
-          isReady = await checkBatchReady(links.slice((i + 1) * BATCH_SIZE, Math.min((i + 2) * BATCH_SIZE, numVideos)));
+          isReady = await checkBatchReady(links.slice(i * BATCH_SIZE, Math.min((i + 1) * BATCH_SIZE, numVideos)));
           await new Promise(resolve => setTimeout(resolve, WAIT_TIME));
         }
       }
@@ -72,39 +72,29 @@ async function downloadVideos() {
 }
 
 async function checkBatchReady(batchLinks) {
-  for (let i = 0; i < batchLinks.length; i++) {
-    const link = batchLinks[i];
+  const promises = batchLinks.map(async (link) => {
     const info = await ytdl.getInfo(link);
     const title = sanitize(info.videoDetails.title);
     const videoPath = `videos/${title}.mp4`;
     const audioPath = `audios/${title}.mp3`;
 
-    const videoReady = await checkFileReady(videoPath);
-    const audioReady = await checkFileReady(audioPath);
-    if (!videoReady || !audioReady) {
-      console.log(`File ${i + 1}/${batchLinks.length} in batch is not ready yet.`);
-      return false;
-    }
-  }
-  return true;
+    const videoExists = await fs.promises.access(videoPath)
+      .then(() => true)
+      .catch(() => false);
+
+    const audioExists = await fs.promises.access(audioPath)
+      .then(() => true)
+      .catch(() => false);
+
+    return videoExists && audioExists;
+  });
+
+  const results = await Promise.all(promises);
+  return results.every(r => r === true);
 }
 
-function checkFileReady(filePath) {
-  return new Promise(resolve => {
-    fs.stat(filePath, (err, stats) => {
-      if (err) {
-        if (err.code === 'ENOENT') {
-          resolve(false);
-        } else {
-          console.error(err);
-          resolve(false);
-        }
-      } else {
-        resolve(stats.isFile() && stats.size > 0);
-      }
-    });
-  });
-}
+
+
 
 
 
@@ -219,28 +209,6 @@ app.get("/shows", (req, res) => {
         html += `</div>
     </body>
 </html>`;
-
-    for (const videoFile of videoFiles) {
-      html += `<div>
-                <div>
-                    <h2>${videoFile}</h2>
-                </div>
-                <video
-                    style="height: 300px"
-                    muted
-                    playsInline
-                    loop
-                    controls
-                    src="/videos/${videoFile}" 
-                    >
-                </video>
-            </div>`;
-    }
-
-    html += `</div>
-    </body>
-</html>`;
-
     res.send(html);
   });
 });
@@ -318,5 +286,7 @@ app.get('/dir', (req, res) => {
 app.listen(port, () => {
   console.log(`Open your browser and navigate to http://localhost:${port}`);
 });
+
+
 
 }
