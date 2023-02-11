@@ -33,40 +33,77 @@ async function downloadVideos() {
       const batchLinks = links.slice(batchStart, batchEnd);
       const promises = [];
 
-      batchLinks.forEach((link) => {
-        const title = sanitize(ytdl.getURLVideoID(link));
+      for (let j = 0; j < batchLinks.length; j++) {
+        const link = batchLinks[j];
+        console.log(`Downloading ${link}...`);
+
+        const info = await ytdl.getInfo(link);
+        const title = sanitize(info.videoDetails.title);
+
         const videoPath = `videos/${title}.mp4`;
         const audioPath = `audios/${title}.mp3`;
 
-        console.log(`Downloading ${link}...`);
-        const videoStream = ytdl(link, { filter: 'videoonly' });
-        const videoFile = fs.createWriteStream(videoPath);
-        videoStream.pipe(videoFile);
-        const videoPromise = new Promise((resolve, reject) => {
-          videoFile.on('finish', resolve);
-          videoFile.on('error', reject);
-        });
+        const videoPromise = ytdl(link, { filter: 'videoonly' })
+          .pipe(fs.createWriteStream(videoPath));
 
-        const audioStream = ytdl(link, { filter: 'audioonly' });
-        const audioFile = fs.createWriteStream(audioPath);
-        audioStream.pipe(audioFile);
-        const audioPromise = new Promise((resolve, reject) => {
-          audioFile.on('finish', resolve);
-          audioFile.on('error', reject);
-        });
+        const audioPromise = ytdl(link, { filter: 'audioonly' })
+          .pipe(fs.createWriteStream(audioPath));
 
         promises.push(videoPromise, audioPromise);
-      });
+      }
 
       await Promise.all(promises);
+      console.log(`Batch ${i + 1} finished downloading.`);
+
       if (i < numBatches - 1) {
-        console.log(`Pausing until batch ${i + 1} is finished...`);
-        await Promise.all(promises);
+        console.log(`Pausing until batch ${i + 2} is ready...`);
+        let isReady = false;
+        while (!isReady) {
+          isReady = await checkBatchReady(links.slice((i + 1) * BATCH_SIZE, Math.min((i + 2) * BATCH_SIZE, numVideos)));
+          await new Promise(resolve => setTimeout(resolve, WAIT_TIME));
+        }
       }
     }
+
+    console.log(`All batches finished downloading.`);
   } catch (err) {
     console.error(err);
   }
+}
+
+async function checkBatchReady(batchLinks) {
+  for (let i = 0; i < batchLinks.length; i++) {
+    const link = batchLinks[i];
+    const info = await ytdl.getInfo(link);
+    const title = sanitize(info.videoDetails.title);
+    const videoPath = `videos/${title}.mp4`;
+    const audioPath = `audios/${title}.mp3`;
+
+    const videoReady = await checkFileReady(videoPath);
+    const audioReady = await checkFileReady(audioPath);
+    if (!videoReady || !audioReady) {
+      console.log(`File ${i + 1}/${batchLinks.length} in batch is not ready yet.`);
+      return false;
+    }
+  }
+  return true;
+}
+
+function checkFileReady(filePath) {
+  return new Promise(resolve => {
+    fs.stat(filePath, (err, stats) => {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          resolve(false);
+        } else {
+          console.error(err);
+          resolve(false);
+        }
+      } else {
+        resolve(stats.isFile() && stats.size > 0);
+      }
+    });
+  });
 }
 
 
