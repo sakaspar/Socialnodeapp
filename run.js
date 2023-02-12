@@ -172,16 +172,14 @@ app.get("/shows", (req, res) => {
     <body> 
         <h1>V</h1>
         
-        <div style="display: flex; flex-wrap: wrap;">`;
-
-        let videoCounter = 0;
+        <div style="display: grid; grid-template-columns: 1fr 1fr;">`;
         for (const videoFile of videoFiles) {
-            html += `<div style="flex: 1; padding: 10px;">
+            html += `<div>
                 <div>
                     <h2>${videoFile}</h2>
                 </div>
                 <video
-                    style="height: 300px"
+                    style="height: 300px;min-width:100%"
                     muted
                     playsInline
                     loop
@@ -189,12 +187,7 @@ app.get("/shows", (req, res) => {
                     src="/videos/${videoFile}" 
                     >
                 </video>
-            </div>`;
-            
-            videoCounter++;
-            if (videoCounter % 2 === 0) {
-                html += `</div><div style="display: flex; flex-wrap: wrap;">`;
-            }
+            </div>`;  
         }
 
         html += `</div>
