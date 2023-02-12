@@ -1,4 +1,4 @@
-exports.run = function() {
+exports.run = async function() {
 const request = require('request');
 const cheerio = require('cheerio');
 const fs = require('fs');

@@ -93,6 +93,9 @@ async function checkBatchReady(batchLinks) {
   return results.every(r => r === true);
 }
 
+
+
+
 function getDirectoryContents(dir) {
   return new Promise((resolve, reject) => {
     fs.readdir(dir, (err, files) => {
@@ -142,33 +145,10 @@ fs.readdir(directoryPath, function (err, files) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/new', (req, res) => {
-  fs.readFile(linksFile, 'utf-8', (err, data) => {
-    if (err) {
-      console.error(err);
-      return res.sendStatus(500);
-    }
-    const links = data.split(',');
-    links.forEach((link) => {
-      
-      ytdl(link, { filter: 'audioandvideo' })
-        .pipe(fs.createWriteStream(`videos/video-${Date.now()}.mp4`));
-      ytdl.getInfo(link,function(err, info) {console.log("info is :",info)})
-    });
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  });
-});
-
-
-
-
 app.get('/new1', async (req, res) => {
  await downloadVideos();
  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
-
-
 
 app.get("/shows", (req, res) => {
   fs.readdir("./videos", (err, files) => {
@@ -225,33 +205,6 @@ app.get("/shows", (req, res) => {
 });
 
 
-
-
-app.get("/videos/:videoFile", (req, res) => {
-  const filePath = `./videos/${req.params.videoFile}`;
-
-  fs.stat(filePath, (err, stat) => {
-    if (err) {
-      console.error(`File stat error for ${filePath}.`);
-      console.error(err);
-      res.sendStatus(500);
-      return;
-    }
-
-    res.setHeader("content-type", "video/mp4");
-    res.setHeader("content-length", stat.size);
-
-    const fileStream = fs.createReadStream(filePath);
-    fileStream.on("error", (error) => {
-      console.log(`Error reading file ${filePath}.`);
-      console.log(error);
-      res.sendStatus(500);
-    });
-    fileStream.pipe(res);
-  });
-});
-
-
 app.get('/dir', (req, res) => {
   const audioDir = path.join(__dirname, 'audios');
   const videoDir = path.join(__dirname, 'videos');
@@ -285,14 +238,8 @@ app.get('/dir', (req, res) => {
     });
 });
 
-
-
-
 app.listen(port, () => {
   console.log(`Open your browser and navigate to http://localhost:${port}`);
 });
-
-
-
 
 }
