@@ -11,8 +11,7 @@ check the videos forlder :
 https://socialnodeapp.onrender.com/shows
 check both mp3 and mp4 :
 https://socialnodeapp.onrender.com/dir
-logs x) : 
-not sure yet 
+
 
 Cheers♥
  
