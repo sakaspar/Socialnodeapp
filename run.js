@@ -172,7 +172,7 @@ app.get("/shows", (req, res) => {
     <body> 
         <h1>V</h1>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr;">`;
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap:20px;">`;
         for (const videoFile of videoFiles) {
             html += `<div>
                 <div>
