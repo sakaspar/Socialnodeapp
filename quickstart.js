@@ -1,6 +1,6 @@
 var fs = require('fs');
 var readline = require('readline');
-var {google} = require('googleapis');
+var {google} = require('googleapis');//Doc : https://developers.google.com/youtube/v3
 const axios = require("axios");
 
 var OAuth2 = google.auth.OAuth2;
@@ -8,28 +8,25 @@ var OAuth2 = google.auth.OAuth2;
 const API_KEY = "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";
 
 
-// Load client secrets from a local file.
-fs.readFile('client_secret.json', function processClientSecrets(err, content) {
-  if (err) {
-    console.log('Error loading client secret file: ' + err);
-    return;
-  }
-  // Authorize a client with the loaded credentials, then call the YouTube API.
-  authorize(JSON.parse(content), getChannel);
-});
-
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- *
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
 function authorize(credentials, callback) {
   var clientSecret = credentials.web.client_secret;
   var clientId = credentials.web.client_id;
   var redirectUrl = credentials.web.redirect_uris;
   var oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl);
+
+  // Check if we have previously stored a token.
+  fs.readFile(TOKEN_PATH, function(err, token) {
+    if (err) {
+      getNewToken(oauth2Client, callback);
+    } else {
+      oauth2Client.credentials = JSON.parse(token);
+      callback(oauth2Client);
+    }
+  });
+}
+
+
+
 
  
 

@@ -1,3 +1,4 @@
+exports.run = function() {
 const deepspeech = require('deepspeech');
 const tf = require('@tensorflow/tfjs-node');
 const fs = require('fs');
@@ -28,3 +29,5 @@ async function transcribeSpeech(filename) {
 }
 
 transcribeSpeech('path/to/audio.wav');
+
+}
