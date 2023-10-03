@@ -11,10 +11,12 @@ const BATCH_SIZE = 5;
 const WAIT_TIME = 30 * 1000; // 30 seconds
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
-
-
+// Function to ensure a directory exists, create it if not
+function ensureDirectoryExists(directory) {
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, { recursive: true });
+  }
+}
 
 //functions
 async function downloadVideos() {
@@ -42,6 +44,9 @@ async function downloadVideos() {
 
         const videoPath = `videos/${title}.mp4`;
         const audioPath = `audios/${title}.mp3`;
+
+        // Ensure the 'audios' directory exists
+        ensureDirectoryExists(path.dirname(audioPath));
 
         const videoPromise = ytdl(link, { filter: 'audioandvideo' })
           .pipe(fs.createWriteStream(videoPath));
