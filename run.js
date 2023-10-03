@@ -133,8 +133,26 @@ function getDirectoryContents(dir) {
 
 //endpoints 
 app.get('/', (req, res) => {
-  await downloadVideos();
+  ytdl('https://www.youtube.com/watch?v=Ul8vqaGGnY0',{filter: 'audioandvideo'})
+  .pipe(fs.createWriteStream('videos/video1.mp4'));
+
+
+const directoryPath = path.join(__dirname, '.');
+
+fs.readdir(directoryPath, function (err, files) {
+  if (err) {
+    return console.log('Unable to scan directory: ' + err);
+  }
+  files.forEach(function (file) {
+    console.log(file);
+  });
+});
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/new1', async (req, res) => {
+ await downloadVideos();
+ res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get("/shows", (req, res) => {
